@@ -1,0 +1,14 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "eco.reeco/reecopedia",
+  "title": "Reecopedia",
+  "description": "Regulatory search engine for EU textile sustainability law: ESPR, DPP, CSRD, CBAM, CWA 18291.",
+  "websiteUrl": "https://ia.reeco.eco/reecopedia",
+  "version": "1.3.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://ia.reeco.eco/mcp"
+    }
+  ]
+}
