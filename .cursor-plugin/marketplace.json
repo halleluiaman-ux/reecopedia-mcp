@@ -1,0 +1,18 @@
+{
+  "name": "reeco",
+  "owner": {
+    "name": "Stefano Cipriani Studio",
+    "email": "admin@reeco.eco"
+  },
+  "metadata": {
+    "description": "Reeco plugins for Cursor — cited search over EU product and sustainability law",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "reecopedia",
+      "source": "./plugins/reecopedia",
+      "description": "Cited search over EU product and sustainability law (ESPR, Digital Product Passport, CSRD, CBAM, EU ETS, CEN CWA 18291)"
+    }
+  ]
+}
