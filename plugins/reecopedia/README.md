@@ -25,9 +25,11 @@ official text.
 
 ## Notes
 
-Queries are matched against the legal wording of the acts, which are in English.
-Ask in any language; phrase the query in the legal register of the act for the
-best retrieval.
+The corpus is in English and retrieval matches the wording of the law, not the
+phrasing of a question. Queries are therefore sent to the server in English and in
+the legal register of the act, whatever language you are working in; the answer
+comes back in your language. Article and annex numbers and act identifiers
+(`Article 9`, `ESPR`, `2024/1781`) are matched as metadata and are kept verbatim.
 
 - Website and how to connect: https://ia.reeco.eco/reecopedia
 - Privacy policy: https://ia.reeco.eco/reecopedia/privacy
