@@ -1,0 +1,13 @@
+{
+  "name": "reecopedia",
+  "displayName": "Reecopedia",
+  "version": "1.0.0",
+  "description": "Cited search over EU product and sustainability law: ESPR (Regulation (EU) 2024/1781), Digital Product Passport, CSRD, CBAM, EU ETS, CEN CWA 18291 and JRC preparatory studies. Every answer cites source file and page. Public read-only MCP server, no authentication.",
+  "author": {
+    "name": "Stefano Cipriani Studio",
+    "email": "admin@reeco.eco"
+  },
+  "license": "MIT",
+  "keywords": ["mcp", "eu-law", "espr", "digital-product-passport", "csrd", "cbam", "sustainability", "compliance", "textiles"],
+  "logo": "assets/logo.svg"
+}
