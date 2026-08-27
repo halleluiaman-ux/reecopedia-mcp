@@ -40,7 +40,46 @@ Every answer is grounded in retrieved passages with source citations (document, 
 claude mcp add --transport http reecopedia https://ia.reeco.eco/mcp
 ```
 
-**ChatGPT (developer mode) and other MCP clients** — add a remote MCP server with transport `streamable-http` and URL `https://ia.reeco.eco/mcp`. Generic JSON config:
+**ChatGPT (developer mode)** — Settings → Connectors → *Add custom connector* → URL `https://ia.reeco.eco/mcp`, no authentication.
+
+**Cursor** — add to `.cursor/mcp.json` in the project, or `~/.cursor/mcp.json` for every workspace:
+
+```json
+{
+  "mcpServers": {
+    "reecopedia": {
+      "url": "https://ia.reeco.eco/mcp"
+    }
+  }
+}
+```
+
+**VS Code (GitHub Copilot)** — add to `.vscode/mcp.json` in the workspace, or run *MCP: Open User Configuration*:
+
+```json
+{
+  "servers": {
+    "reecopedia": {
+      "type": "http",
+      "url": "https://ia.reeco.eco/mcp"
+    }
+  }
+}
+```
+
+**Gemini CLI** — add to `~/.gemini/settings.json` (`httpUrl` selects the streamable HTTP transport):
+
+```json
+{
+  "mcpServers": {
+    "reecopedia": {
+      "httpUrl": "https://ia.reeco.eco/mcp"
+    }
+  }
+}
+```
+
+**Any other MCP client** — add a remote MCP server with transport `streamable-http` and URL `https://ia.reeco.eco/mcp`. Generic JSON config:
 
 ```json
 {
