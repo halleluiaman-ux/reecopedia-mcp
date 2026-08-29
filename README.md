@@ -67,7 +67,13 @@ claude mcp add --transport http reecopedia https://ia.reeco.eco/mcp
 }
 ```
 
-**Gemini CLI** — add to `~/.gemini/settings.json` (`httpUrl` selects the streamable HTTP transport):
+**Gemini CLI** — install as an extension, one command:
+
+```bash
+gemini extensions install https://github.com/halleluiaman-ux/reecopedia-mcp
+```
+
+Or add it by hand to `~/.gemini/settings.json` (`httpUrl` selects the streamable HTTP transport):
 
 ```json
 {
