@@ -28,6 +28,9 @@ Every answer is grounded in retrieved passages with source citations (document, 
 |---|---|
 | `search_eu_textile_regulations` | Main search over the regulatory corpus, returns cited passages |
 | `search` / `fetch` | Same corpus in the deep-research format (search by query, fetch full document page by id) |
+| `document_outline` | Table of contents of one document, to navigate a long act or standard |
+| `find_exact_text` | Locate a literal string (e.g. an article number or defined term) inside one document |
+| `report_answer_issue` | Flag a wrong or unsupported answer for correction |
 | `about_reecopedia` | What Reecopedia is, who runs it, privacy policy |
 
 ## Connect
