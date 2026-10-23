@@ -29,7 +29,7 @@ def request_body(model, prompt):
         type="mcp_server", name="reecopedia", url=ENDPOINT,
         allowed_tools=[{"mode": "auto", "tools": READ_TOOLS}],
     )
-    config = interactions.GenerationConfig(max_output_tokens=1800)
+    config = interactions.GenerationConfig(max_output_tokens=1800, thinking_level="low")
     return {
         "model": model,
         "input": prompt,
@@ -47,14 +47,19 @@ def verified_output(response):
     data = response.model_dump(mode="json", exclude_none=True)
     if data.get("status") != "completed" or data.get("errors"):
         raise ValueError("Gemini interaction did not complete successfully")
-    calls = {
-        s["id"]: s for s in data.get("steps", [])
-        if s.get("type") == "mcp_server_tool_call"
-        and s.get("server_name") == "reecopedia"
-    }
+    calls = {}
+    for step in data.get("steps", []):
+        if (step.get("type") == "mcp_server_tool_call"
+                and step.get("server_name") == "reecopedia"):
+            calls[step["id"]] = step
+        elif (step.get("type") == "function_call"
+              and step.get("name", "").startswith("reecopedia:")):
+            # Observed on the live Google Interactions stream, 23 Oct 2026.
+            calls[step["id"]] = {**step, "name": step["name"].split(":", 1)[1]}
     results = [
         s for s in data.get("steps", [])
-        if s.get("type") == "mcp_server_tool_result" and s.get("call_id") in calls
+        if s.get("type") in {"mcp_server_tool_result", "function_result"}
+        and s.get("call_id") in calls
     ]
     if not calls or {r["call_id"] for r in results} != set(calls):
         raise ValueError("No matched Reecopedia MCP call/result; integration unverified")
@@ -78,8 +83,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", required=True, help="Model available to your Google account")
     parser.add_argument("--prompt", default=DEFAULT_PROMPT)
+    parser.add_argument("--timeout-seconds", type=int, default=300,
+                        help="Google request timeout in seconds (default: 300)")
     parser.add_argument("--check", action="store_true", help="Validate request only; no network or key")
     args = parser.parse_args()
+    if not 1 <= args.timeout_seconds <= 600:
+        parser.error("--timeout-seconds must be between 1 and 600")
     body = request_body(args.model, args.prompt)
     if args.check:
         print(json.dumps({"validation": "local_only", "request": body}, indent=2))
@@ -92,10 +101,11 @@ def main():
         with genai.Client(
             api_key=api_key,
             http_options=types.HttpOptions(
-                timeout=120_000, retry_options=types.HttpRetryOptions(attempts=1),
+                timeout=args.timeout_seconds * 1000,
+                retry_options=types.HttpRetryOptions(attempts=1),
             ),
         ) as client:
-            response = client.interactions.create(**body)
+            response = client.interactions.create(**body, timeout=args.timeout_seconds)
         answer, evidence = verified_output(response)
     except ValueError as exc:
         print(str(exc), file=sys.stderr)

@@ -126,7 +126,8 @@ python3 -m venv .venv
 .venv/bin/python examples/gemini_api.py --model YOUR_AVAILABLE_GEMINI_MODEL
 ```
 
-The example bounds output, disables automatic retries, restricts tools to source
+The example uses a 300-second Google request timeout (configurable with
+`--timeout-seconds`), low thinking, bounded output, no automatic retries, and restricts tools to source
 reading, and exits unsuccessfully unless the response contains a matched MCP call
 and result plus an answer. A plausible answer alone does not prove MCP use.
 `--check` validates the request locally without a key or network call; it does
@@ -143,8 +144,11 @@ availability in Gemini web/mobile. See Google’s
 Gemini CLI 0.65.0 validated and loaded extension 1.0.1 and reported the public
 MCP endpoint as Connected. A separate MCP client completed a public search and
 fetched the returned Article 9(2) identifier successfully. The API example passed
-eight local contract tests using google-genai 2.33.0 and a mocked HTTP transport.
-**A live Google API generation has not yet been run: a Google API key is required.**
+eleven local contract tests using google-genai 2.33.0 and a mocked HTTP transport.
+A live plain streaming Google request returned `OK` after 161.4 seconds.
+The remote MCP stream began a `reecopedia:find_exact_text` call and result, but
+ended without a completed answer; non-streaming MCP requests timed out even at
+300 seconds. **A completed Gemini API + MCP answer remains unverified.**
 These checks do not certify answer quality or gallery inclusion.
 
 ## Privacy
