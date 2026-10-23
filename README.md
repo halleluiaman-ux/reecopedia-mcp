@@ -29,6 +29,7 @@ Every answer is grounded in retrieved passages with source citations (document, 
 | `search_eu_textile_regulations` | Main search over the regulatory corpus, returns cited passages |
 | `search` / `fetch` | Same corpus in the deep-research format (search by query, fetch full document page by id) |
 | `document_outline` | Table of contents of one document, to navigate a long act or standard |
+| `list_corpus_documents` | List available corpus documents, optionally filtered by title |
 | `find_exact_text` | Locate a literal string (e.g. an article number or defined term) inside one document |
 | `report_answer_issue` | Flag a wrong or unsupported answer for correction |
 | `about_reecopedia` | What Reecopedia is, who runs it, privacy policy |
@@ -76,6 +77,16 @@ claude mcp add --transport http reecopedia https://ia.reeco.eco/mcp
 gemini extensions install https://github.com/halleluiaman-ux/reecopedia-mcp
 ```
 
+Restart Gemini CLI after installation, then run `/extensions list` and `/mcp`
+to check that `reecopedia` is loaded and connected. Try:
+
+> Use Reecopedia to find Article 9 of Regulation (EU) 2024/1781. Fetch the
+> relevant passage and cite its document title, reference and original URL.
+
+The extension exposes seven source-reading tools. `report_answer_issue` is excluded
+because it submits a report. Gemini CLI authentication is separate from the
+Reecopedia server, which requires no account or key.
+
 Or add it by hand to `~/.gemini/settings.json` (`httpUrl` selects the streamable HTTP transport):
 
 ```json
@@ -100,6 +111,41 @@ Or add it by hand to `~/.gemini/settings.json` (`httpUrl` selects the streamable
   }
 }
 ```
+
+## Gemini API example
+
+[examples/gemini_api.py](examples/gemini_api.py) connects Google’s Interactions
+API to the same remote MCP endpoint using the official Python SDK. It requires
+your own Gemini API key and a model available to your Google account. Google’s
+API usage terms and charges apply separately from public Reecopedia access.
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r examples/requirements.txt
+# Set GEMINI_API_KEY securely in your environment.
+.venv/bin/python examples/gemini_api.py --model YOUR_AVAILABLE_GEMINI_MODEL
+```
+
+The example bounds output, disables automatic retries, restricts tools to source
+reading, and exits unsuccessfully unless the response contains a matched MCP call
+and result plus an answer. A plausible answer alone does not prove MCP use.
+`--check` validates the request locally without a key or network call; it does
+not verify Google access or a live integration.
+
+Gemini CLI gallery discovery uses the GitHub topic `gemini-cli-extension` and
+the root manifest. A valid repository does not guarantee gallery inclusion or
+availability in Gemini web/mobile. See Google’s
+[extension release guide](https://geminicli.com/docs/extensions/releasing/) and
+[remote MCP API documentation](https://ai.google.dev/gemini-api/docs/function-calling).
+
+### Verification on 23 October 2026
+
+Gemini CLI 0.65.0 validated and loaded extension 1.0.1 and reported the public
+MCP endpoint as Connected. A separate MCP client completed a public search and
+fetched the returned Article 9(2) identifier successfully. The API example passed
+eight local contract tests using google-genai 2.33.0 and a mocked HTTP transport.
+**A live Google API generation has not yet been run: a Google API key is required.**
+These checks do not certify answer quality or gallery inclusion.
 
 ## Privacy
 

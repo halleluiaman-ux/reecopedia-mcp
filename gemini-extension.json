@@ -1,10 +1,20 @@
 {
   "name": "reecopedia",
-  "version": "1.0.0",
-  "description": "Regulatory search engine for EU textile sustainability law: ESPR (EU) 2024/1781, Digital Product Passport, CSRD, CBAM, EU ETS, CWA 18291 (CIRPASS-2) and JRC preparatory studies. Answers are grounded in retrieved passages with source citations (document, page). Free remote MCP server, no account and no API key.",
+  "version": "1.0.1",
+  "description": "Search EU textile sustainability sources: ESPR, Digital Product Passport, CSRD, CBAM and JRC studies. Public remote MCP; no Reecopedia account or API key.",
   "mcpServers": {
     "reecopedia": {
-      "httpUrl": "https://ia.reeco.eco/mcp"
+      "httpUrl": "https://ia.reeco.eco/mcp",
+      "includeTools": [
+        "about_reecopedia",
+        "search_eu_textile_regulations",
+        "search",
+        "fetch",
+        "document_outline",
+        "find_exact_text",
+        "list_corpus_documents"
+      ]
     }
-  }
+  },
+  "contextFileName": "GEMINI.md"
 }
