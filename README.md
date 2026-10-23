@@ -133,6 +133,13 @@ and result plus an answer. A plausible answer alone does not prove MCP use.
 `--check` validates the request locally without a key or network call; it does
 not verify Google access or a live integration.
 
+API failures print a diagnostic JSON to stderr: HTTP status, structured API error
+status/message when provided, and an explicit allowlist of response trace headers.
+Request headers, URLs, cookies and arbitrary response bodies are excluded; the
+active API key is redacted from the selected values. A client timeout can have
+no HTTP status or response headers. Missing tracing headers remain absent.
+
+
 Gemini CLI gallery discovery uses the GitHub topic `gemini-cli-extension` and
 the root manifest. A valid repository does not guarantee gallery inclusion or
 availability in Gemini web/mobile. See Google’s
@@ -144,7 +151,7 @@ availability in Gemini web/mobile. See Google’s
 Gemini CLI 0.65.0 validated and loaded extension 1.0.1 and reported the public
 MCP endpoint as Connected. A separate MCP client completed a public search and
 fetched the returned Article 9(2) identifier successfully. The API example passed
-eleven local contract tests using google-genai 2.33.0 and a mocked HTTP transport.
+thirteen local contract tests using google-genai 2.33.0 and a mocked HTTP transport.
 A live plain streaming Google request returned `OK` after 161.4 seconds.
 The remote MCP stream began a `reecopedia:find_exact_text` call and result, but
 ended without a completed answer; non-streaming MCP requests timed out even at

@@ -21,6 +21,39 @@ DEFAULT_PROMPT = (
     "source URL supplied by Reecopedia. Distinguish source text from your "
     "interpretation. If evidence is missing, state the gap."
 )
+TRACE_HEADERS = {
+    "x-request-id", "request-id", "x-goog-request-id", "x-goog-trace-id",
+    "x-cloud-trace-context", "traceparent", "server", "date", "retry-after",
+}
+
+
+def error_diagnostic(exc, api_key):
+    """Extract bounded response diagnostics; never dump request headers or URLs."""
+    def clean(value):
+        text = str(value)
+        if api_key:
+            text = text.replace(api_key, "[REDACTED]")
+        return text[:1200]
+
+    response = getattr(exc, "response", None)
+    status = getattr(exc, "status_code", None) or getattr(exc, "code", None)
+    if status is None and response is not None:
+        status = getattr(response, "status_code", None)
+    body = getattr(exc, "body", None)
+    error = body.get("error", {}) if isinstance(body, dict) else {}
+    if not isinstance(error, dict):
+        error = {}
+    headers = getattr(response, "headers", {}) if response is not None else {}
+    return {
+        "error_type": type(exc).__name__,
+        "http_status": status if isinstance(status, int) else None,
+        "api_status": clean(error["status"]) if "status" in error else None,
+        "api_message": clean(error["message"]) if "message" in error else None,
+        "response_headers": {
+            str(k).lower(): clean(v) for k, v in headers.items()
+            if str(k).lower() in TRACE_HEADERS
+        },
+    }
 
 
 def request_body(model, prompt):
@@ -111,8 +144,8 @@ def main():
         print(str(exc), file=sys.stderr)
         return 1
     except Exception as exc:
-        # Avoid dumping headers, credentials or arbitrary provider response bodies.
         print(f"Gemini request failed ({type(exc).__name__}); no success claimed.", file=sys.stderr)
+        print(json.dumps(error_diagnostic(exc, api_key), indent=2), file=sys.stderr)
         return 1
     print(answer)
     print(json.dumps(evidence, indent=2), file=sys.stderr)
